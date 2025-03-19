@@ -16,9 +16,9 @@ public class AppController {
     private PostService postService;
 
     @PostMapping("/create")
-    public Post createPost(@RequestParam String userId, @RequestParam String content, @RequestParam(required = false) String parentPostId){
+    public Post createPost(@RequestBody Post post){
 
-        return postService.createPost(userId, content, parentPostId);
+        return postService.createPost(post.getUserId(), post.getContent(), post.getParentPostId());
     }
 
     @GetMapping("/{id}/replies")
