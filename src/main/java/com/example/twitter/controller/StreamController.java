@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("api/v1/stream")
+@RequestMapping("api/stream")
 public class StreamController {
 
     private final StreamService streamService;

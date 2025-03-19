@@ -1,7 +1,13 @@
 package com.example.twitter.model;
 
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
+
+@Document(collection = "Users")
 public class User {
 
+    @Id
+    private String id;
     private String username;
     private String password;
 
@@ -20,13 +26,8 @@ public class User {
         this.username = username;
     }
 
-    /**
-     * Constructs a user with the given username and password.
-     *
-     * @param username the username of the user
-     * @param password the password of the user
-     */
-    public User(String username, String password) {
+    public User(String id, String username, String password) {
+        this.id = id;
         this.username = username;
         this.password = password;
     }
@@ -58,6 +59,14 @@ public class User {
         return password;
     }
 
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
     /**
      * Sets the password of the user.
      *
@@ -67,4 +76,12 @@ public class User {
         this.password = password;
     }
 
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", username='" + username + '\'' +
+                ", password='" + password + '\'' +
+                '}';
+    }
 }

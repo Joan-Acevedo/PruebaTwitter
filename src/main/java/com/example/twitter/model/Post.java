@@ -6,7 +6,7 @@ import jakarta.validation.constraints.Size;
 import java.time.LocalDate;
 
 
-@Document(collection = "stream") // Indica que se almacena en MongoDB en la colección "stream"
+@Document(collection = "Posts")
 public class Post {
 
     @Id
@@ -58,5 +58,15 @@ public class Post {
 
     public void setContent(String content) {
         this.content = content;
+    }
+
+    @Override
+    public String toString() {
+        return "Post{" +
+                "id='" + id + '\'' +
+                ", username='" + username + '\'' +
+                ", creationDate=" + creationDate +
+                ", content='" + content + '\'' +
+                '}';
     }
 }

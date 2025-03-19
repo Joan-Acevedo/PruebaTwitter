@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Twitter Clone</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #e6f7e6;
+      margin: 0;
+      padding: 20px;
+      display: flex;
+      justify-content: center;
+    }
+    .container {
+      width: 50%;
+      background: #d4edda;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+    .tweet-box {
+      display: flex;
+      flex-direction: column;
+      background: #c3e6cb;
+      padding: 15px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+    }
+    .tweet-input {
+      border: none;
+      padding: 10px;
+      font-size: 16px;
+      border-radius: 5px;
+      margin-bottom: 10px;
+    }
+    .post-btn {
+      background: #5cb85c;
+      color: white;
+      border: none;
+      padding: 10px;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    .tweets {
+      background: #dff0d8;
+      padding: 15px;
+      border-radius: 8px;
+    }
+    .tweet {
+      background: #b2dfdb;
+      padding: 15px;
+      border-radius: 8px;
+      margin-bottom: 10px;
+      cursor: pointer;
+    }
+    .tweet-header {
+      display: flex;
+      align-items: center;
+    }
+    .avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      margin-right: 10px;
+    }
+    .username {
+      font-weight: bold;
+    }
+    .handle, .time {
+      color: #666;
+      margin-left: 10px;
+    }
+    .tweet-thread {
+      display: none;
+      margin-left: 20px;
+    }
+    .reply-box {
+      margin-top: 10px;
+      display: none;
+      flex-direction: column;
+    }
+    .reply-input {
+      border: none;
+      padding: 8px;
+      font-size: 14px;
+      border-radius: 5px;
+      margin-bottom: 5px;
+    }
+    .reply-btn {
+      background: #4cae4c;
+      color: white;
+      border: none;
+      padding: 8px;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <div class="tweet-box">
+    <input type="text" placeholder="What is happening?" class="tweet-input">
+    <button class="post-btn">Post</button>
+  </div>
+  <div class="tweets">
+    <div class="tweet" onclick="toggleThread(this)">
+      <div class="tweet-header">
+        <img src="user.jpg" alt="User" class="avatar">
+        <span class="username">David Bend</span>
+        <span class="handle">@davidbend998</span>
+        <span class="time">2h</span>
+      </div>
+      <p class="tweet-content">"What if he was right?"</p>
+      <div class="tweet-thread">
+        <div class="tweet">
+          <div class="tweet-header">
+            <img src="user.jpg" alt="User" class="avatar">
+            <span class="username">David Bend</span>
+            <span class="handle">@davidbend998</span>
+            <span class="time">1h</span>
+          </div>
+          <p>"I keep thinking about it..."</p>
+        </div>
+        <div class="tweet">
+          <div class="tweet-header">
+            <img src="user.jpg" alt="User" class="avatar">
+            <span class="username">David Bend</span>
+            <span class="handle">@davidbend998</span>
+            <span class="time">30m</span>
+          </div>
+          <p>"More people should talk about this."</p>
+        </div>
+        <div class="reply-box">
+          <input type="text" placeholder="Reply to this thread" class="reply-input">
+          <button class="reply-btn">Reply</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+  function toggleThread(tweetElement) {
+    let thread = tweetElement.querySelector(".tweet-thread");
+    let replyBox = tweetElement.querySelector(".reply-box");
+    if (thread.style.display === "none" || thread.style.display === "") {
+      thread.style.display = "block";
+      replyBox.style.display = "flex";
+    } else {
+      thread.style.display = "none";
+      replyBox.style.display = "none";
+    }
+  }
+</script>
+</body>
+</html>
