@@ -10,16 +10,55 @@
       font-family: Arial, sans-serif;
       background-color: #e6f7e6;
       margin: 0;
-      padding: 20px;
+      padding: 0;
       display: flex;
-      justify-content: center;
+      flex-direction: column;
+      align-items: center;
+    }
+    .top-bar {
+      width: 98%;
+      background: #5cb85c;
+      color: white;
+      padding: 10px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 18px;
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 50px;
+    }
+    .user-menu {
+      position: relative;
+      cursor: pointer;
+    }
+    .dropdown {
+      display: none;
+      position: absolute;
+      top: 30px;
+      left: 0;
+      background: white;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      border-radius: 5px;
+    }
+    .dropdown a {
+      display: block;
+      padding: 10px;
+      text-decoration: none;
+      color: black;
+      font-size: 15px;
+    }
+    .dropdown a:hover {
+      background: #d4edda;
     }
     .container {
       width: 50%;
-      background: #d4edda;
+      background: #ffffff;
       padding: 20px;
       border-radius: 10px;
       box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      margin-top: 70px;
     }
     .tweet-box {
       display: flex;
@@ -50,7 +89,7 @@
       border-radius: 8px;
     }
     .tweet {
-      background: #b2dfdb;
+      background: #c3e6cb;
       padding: 15px;
       border-radius: 8px;
       margin-bottom: 10px;
@@ -75,7 +114,13 @@
     }
     .tweet-thread {
       display: none;
-      margin-left: 20px;
+      margin-left: 0;
+    }
+    .tweet-thread .tweet {
+      background: #c3e6cb;
+      padding: 15px;
+      border-radius: 8px;
+      margin-bottom: 10px;
     }
     .reply-box {
       margin-top: 10px;
@@ -100,6 +145,17 @@
   </style>
 </head>
 <body>
+
+<div class="top-bar">
+  <div class="app-name">Tuiter</div>
+  <div class="user-menu" onclick="toggleMenu()">
+    <span>David Bend</span>
+    <div class="dropdown" id="userDropdown">
+      <a href="#">Cerrar sesión</a>
+    </div>
+  </div>
+</div>
+
 <div class="container">
   <div class="tweet-box">
     <input type="text" placeholder="What is happening?" class="tweet-input">
@@ -110,49 +166,34 @@
       <div class="tweet-header">
         <img src="user.jpg" alt="User" class="avatar">
         <span class="username">David Bend</span>
-        <span class="handle">@davidbend998</span>
         <span class="time">2h</span>
       </div>
       <p class="tweet-content">"What if he was right?"</p>
-      <div class="tweet-thread">
-        <div class="tweet">
-          <div class="tweet-header">
-            <img src="user.jpg" alt="User" class="avatar">
-            <span class="username">David Bend</span>
-            <span class="handle">@davidbend998</span>
-            <span class="time">1h</span>
-          </div>
-          <p>"I keep thinking about it..."</p>
+    </div>
+    <div class="tweet-thread">
+      <div class="tweet">
+        <div class="tweet-header">
+          <img src="user.jpg" alt="User" class="avatar">
+          <span class="time">1h</span>
         </div>
-        <div class="tweet">
-          <div class="tweet-header">
-            <img src="user.jpg" alt="User" class="avatar">
-            <span class="username">David Bend</span>
-            <span class="handle">@davidbend998</span>
-            <span class="time">30m</span>
-          </div>
-          <p>"More people should talk about this."</p>
+        <p>"I keep thinking about it..."</p>
+      </div>
+      <div class="tweet">
+        <div class="tweet-header">
+          <img src="user.jpg" alt="User" class="avatar">
+          <span class="username">David Bend</span>
+          <span class="time">30m</span>
         </div>
-        <div class="reply-box">
-          <input type="text" placeholder="Reply to this thread" class="reply-input">
-          <button class="reply-btn">Reply</button>
-        </div>
+        <p>"More people should talk about this."</p>
+      </div>
+      <div class="reply-box">
+        <input type="text" placeholder="Reply to this thread" class="reply-input">
+        <button class="reply-btn" onclick="postTweet()">Reply</button>
       </div>
     </div>
   </div>
 </div>
-<script>
-  function toggleThread(tweetElement) {
-    let thread = tweetElement.querySelector(".tweet-thread");
-    let replyBox = tweetElement.querySelector(".reply-box");
-    if (thread.style.display === "none" || thread.style.display === "") {
-      thread.style.display = "block";
-      replyBox.style.display = "flex";
-    } else {
-      thread.style.display = "none";
-      replyBox.style.display = "none";
-    }
-  }
-</script>
+
+<script src="js/script.js"></script>
 </body>
 </html>

@@ -1,9 +1,12 @@
 package com.example.twitter.model;
 
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 import jakarta.validation.constraints.Size;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 
 @Document(collection = "Posts")
@@ -11,19 +14,25 @@ public class Post {
 
     @Id
     private String id;
-    private String username;
+    private String userId;
     private LocalDate creationDate;
 
     @Size(max = 140, message = "Content must be at most 140 characters")
     private String content;
 
+    private String parentPostId;
+
+    private String threadRootId;
+
+    private List<String> replies = new ArrayList<>();
+
 
     public Post() {
     }
 
-    public Post(String username, LocalDate creationDate, String content) {
-        this.username = username;
-        this.creationDate = creationDate;
+    public Post(String userId, String content) {
+        this.userId = userId;
+        this.creationDate = LocalDate.now();
         this.content = content;
     }
 
@@ -36,12 +45,12 @@ public class Post {
         this.id = id;
     }
 
-    public String getUsername() {
-        return username;
+    public String getUserId() {
+        return userId;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 
     public LocalDate getCreationDate() {
@@ -60,13 +69,40 @@ public class Post {
         this.content = content;
     }
 
+    public String getParentPostId() {
+        return parentPostId;
+    }
+
+    public void setParentPostId(String parentPostId) {
+        this.parentPostId = parentPostId;
+    }
+
+    public String getThreadRootId() {
+        return threadRootId;
+    }
+
+    public void setThreadRootId(String threadRootId) {
+        this.threadRootId = threadRootId;
+    }
+
+    public List<String> getReplies() {
+        return replies;
+    }
+
+    public void setReplies(List<String> replies) {
+        this.replies = replies;
+    }
+
     @Override
     public String toString() {
         return "Post{" +
                 "id='" + id + '\'' +
-                ", username='" + username + '\'' +
+                ", userId='" + userId + '\'' +
                 ", creationDate=" + creationDate +
                 ", content='" + content + '\'' +
+                ", parentPostId='" + parentPostId + '\'' +
+                ", threadRootId='" + threadRootId + '\'' +
+                ", replies=" + replies +
                 '}';
     }
 }
