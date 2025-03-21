@@ -1,84 +1,83 @@
 package com.example.twitter.services;
 
 import com.example.twitter.model.Post;
+import com.example.twitter.model.Thread;
 import com.example.twitter.repository.PostRepository;
+import com.example.twitter.repository.ThreadRepository;
+
+import io.jsonwebtoken.lang.Collections;
+
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Random;
 
 @Service
 public class PostService {
-
     private final PostRepository postRepository;
+    private final ThreadRepository threadRepository;
 
-    public PostService(PostRepository postRepository) {
+    public PostService(PostRepository postRepository, ThreadRepository threadRepository) {
         this.postRepository = postRepository;
+        this.threadRepository = threadRepository;
     }
 
-    /**
-     * Create a new Post. If it doesnt have a father, it converts in a father of a
-     * new Stream
-     * 
-     * @param userId       Users id who created the Post
-     * @param content      Content of the Post
-     * @param parentPostId Id of the Post that replied, can be null
-     * @return a new Post
-     */
     public Post createPost(String userId, String content, String parentPostId) {
-
         Post post = new Post(userId, content);
 
         if (parentPostId != null) {
             Optional<Post> parentPost = postRepository.findById(parentPostId);
             if (parentPost.isPresent()) {
                 post.setParentPostId(parentPostId);
-                post.setThreadRootId(parentPost.get().getThreadRootId());
+                post.setThreadId(parentPost.get().getThreadId());
             } else {
-                throw new IllegalArgumentException("El post principal no existe");
+                throw new IllegalArgumentException("Parent post not found");
             }
         } else {
-            post.setThreadRootId(post.getId());
+            Thread thread = new Thread(post.getId());
+            thread = threadRepository.save(thread);
+            post.setThreadId(thread.getId());
         }
 
         return postRepository.save(post);
-
     }
 
-    /**
-     * Obtain a post by id
-     * 
-     * @param id id of a post
-     * @return A post
-     */
+    public List<Post> getFeed() {
+        List<Post> posts = postRepository.findAll();
+        List<Post> randomPosts = new ArrayList<>();
+        Random random = new Random();
+        int size = Math.min(5, posts.size());
+        while (randomPosts.size() < size) {
+            Post randomPost = posts.get(random.nextInt(posts.size()));
+            if (!randomPosts.contains(randomPost)) {
+                randomPosts.add(randomPost);
+            }
+        }
+        return randomPosts;
+    }
+
+    public Post createThread(Post post) {
+        Thread thread = new Thread(post.getId());
+        thread = threadRepository.save(thread);
+        post.setThreadId(thread.getId());
+        return postRepository.save(post);
+    }
+
+    public List<Post> getPostsByUser(String userId) {
+        return postRepository.findByUserId(userId);
+    }
+
     public Optional<Post> getPostById(String id) {
         return postRepository.findById(id);
     }
 
-    /**
-     * Obtain all replies
-     * 
-     * @param parentPostId Id of the principal Post
-     * @return a list od all replies
-     */
     public List<Post> getReplies(String parentPostId) {
         return postRepository.findByParentPostId(parentPostId);
     }
 
-    /**
-     * Obtain all principal Post of a stream
-     * 
-     * @return a list of principal post
-     */
-    public List<Post> getRootThreads() {
-        return postRepository.findByParentPostIdIsNull();
-    }
-
     public void deletePost(String id) {
-        List<Post> replies = postRepository.findByParentPostId(id);
-        for (Post reply : replies) {
-            deletePost(reply.getId());
-        }
         postRepository.deleteById(id);
     }
 }
