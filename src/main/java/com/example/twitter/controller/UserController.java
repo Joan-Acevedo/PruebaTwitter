@@ -21,16 +21,11 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-    @Autowired
-    private JWTService jwtService;
-
     @PostMapping("/log-in")
     public ResponseEntity<?> login(@RequestBody LoginDTO loginDTO) {
         try {
 
-            this.userService.authUser(loginDTO.getUsername(), loginDTO.getPassword());
-
-            String session = this.jwtService.sign(loginDTO.getUsername());
+            String session = this.userService.authUser(loginDTO.getUsername(), loginDTO.getPassword());
 
             Map<String, String> responseBody = new HashMap<>();
             responseBody.put("session", session);

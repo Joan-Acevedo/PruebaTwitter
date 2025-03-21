@@ -1,15 +1,13 @@
 package com.example.twitter.model;
 
 import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 import jakarta.validation.constraints.Size;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-
-@Document(collection = "Posts")
+@Document(collection = "posts")
 public class Post {
 
     @Id
@@ -26,7 +24,6 @@ public class Post {
 
     private List<String> replies = new ArrayList<>();
 
-
     public Post() {
     }
 
@@ -35,7 +32,6 @@ public class Post {
         this.creationDate = LocalDate.now();
         this.content = content;
     }
-
 
     public String getId() {
         return id;

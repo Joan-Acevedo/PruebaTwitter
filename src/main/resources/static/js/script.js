@@ -25,7 +25,7 @@ async function getReplies(postId) {
 }
 
 // Crear un nuevo tweet
-async function createPost(userId, content, parentPostId = null) {
+async function createPost(content, parentPostId = null) {
     try {
         const response = await fetch(`${API_URL}/create`, {
             method: "POST",

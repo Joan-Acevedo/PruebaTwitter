@@ -29,7 +29,7 @@ public class JWTService {
     // 🔹 Firma un string usando RS256
     public String sign(String data) {
         return Jwts.builder()
-                .claim("user", data)
+                .claim("userID", data)
                 .signWith(privateKey, SignatureAlgorithm.RS256)
                 .compact();
     }

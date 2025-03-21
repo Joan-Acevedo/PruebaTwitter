@@ -11,22 +11,27 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final JWTService jwtService;
 
-    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, JWTService jwtService) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
+        this.jwtService = jwtService;
     }
 
-    public void authUser(String username, String password) {
+    public String authUser(String username, String password) {
         if (!userRepository.findByUsername(username).isPresent()) {
             throw new RuntimeException("El usuario no existe");
         }
 
         User user = userRepository.findByUsername(username).get();
+        System.out.println(user.getId());
 
         if (!passwordEncoder.matches("123qwe", user.getPassword())) {
             throw new RuntimeException("Contraseña incorrecta");
         }
+
+        return this.jwtService.sign(user.getId());
     }
 
     public User registerUser(User user) {
@@ -34,7 +39,6 @@ public class UserService {
             throw new RuntimeException("El usuario ya existe");
         }
 
-        // Encriptar la contraseña antes de guardarla
         user.setPassword(passwordEncoder.encode(user.getPassword().strip()));
 
         return userRepository.save(user);
