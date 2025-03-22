@@ -245,6 +245,17 @@ Para proteger cualquier ruta con JWT, se debe seguir el mismo patrón implementa
 
 Este mecanismo puede aplicarse a cualquier endpoint que requiera autenticación para proteger los recursos sensibles.
 
+##Despliegue en AWS
+
+### Crecaión de microservicios
+
+Se puede encontrar los microservicios en el siguiente repo:
+
+https://github.com/Andrea2511/BackEndTwitter.git
+
+Para desplegar en aws, se necsita dividir el front del back y subir el front a un S3 para que el back pueda acceder al montar las API:
+
+![image](https://github.com/user-attachments/assets/7764eada-adac-41ab-a5e2-88131157d325)
 
 
 
