@@ -65,15 +65,13 @@ Para desplegar la aplicación en un entorno de producción:
 1. Compila el proyecto:
 
 ```
-./mvnw clean package
+./mvn clean package
 ```
 
-2. Crea un archivo de propiedades de producción con la configuración adecuada.
-
-3. Ejecuta el JAR generado:
+2. Ejecuta la palicacion Sprint-boot:
 
 ```
-java -jar target/twitter-0.0.1-SNAPSHOT.jar --spring.profiles.active=prod
+mvn spring-boot:run
 ```
 
 ## Built With
@@ -83,6 +81,180 @@ java -jar target/twitter-0.0.1-SNAPSHOT.jar --spring.profiles.active=prod
 * [MongoDB](https://www.mongodb.com/) - Base de datos NoSQL
 * [Maven](https://maven.apache.org/) - Gestión de dependencias
 * [Thymeleaf](https://www.thymeleaf.org/) - Motor de plantillas para vistas web
+* 
+
+
+
+
+
+
+
+
+
+
+
+
+# API Documentation
+
+Este documento describe los principales endpoints disponibles en la API de nuestro sistema similar a Twitter.
+
+## Endpoints principales
+
+### Autenticación y usuarios
+
+#### POST `/log-in`
+Autentica a un usuario y genera un token JWT de sesión.
+
+**Entrada:**
+```json
+{
+  "username": "nombre_usuario",
+  "password": "contraseña"
+}
+```
+
+**Salida exitosa:**
+```json
+{
+  "session": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+}
+```
+
+**Error:**
+- Status: 401 Unauthorized
+- Body: "Incorrect credentials"
+
+#### POST `/register`
+Registra un nuevo usuario en el sistema.
+
+**Entrada:**
+```json
+{
+  "username": "nuevo_usuario",
+  "password": "contraseña",
+  "email": "usuario@ejemplo.com"
+  // otros campos de usuario
+}
+```
+
+**Salida exitosa:**
+- Status: 201 Created
+- Body: Objeto completo del usuario registrado
+
+### Publicaciones
+
+#### GET `/posts/feed` 🔒
+**Endpoint protegido con JWT**. Obtiene el feed de publicaciones para el usuario autenticado.
+
+Este endpoint es un ejemplo perfecto de protección mediante JWT:
+1. Requiere un token JWT en el encabezado `Authorization` con formato `Bearer [token]`
+2. El servicio verifica el token antes de procesar la solicitud
+3. Si el token es inválido o no existe, retorna un error 401 Unauthorized
+
+Este mecanismo de protección puede aplicarse a cualquier otra ruta que requiera autenticación, siguiendo el mismo patrón implementado aquí.
+
+**Encabezados requeridos:**
+```
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+```
+
+**Salida exitosa:**
+- Status: 200 OK
+- Body: Lista de publicaciones en el feed del usuario
+
+**Errores:**
+- 401 Unauthorized: Token inválido o no proporcionado
+- 400 Bad Request: Error en los parámetros
+
+#### POST `/posts/create`
+Crea una nueva publicación.
+
+**Entrada:**
+```json
+{
+  "userId": "id_usuario",
+  "content": "Contenido de la publicación",
+  "parentPostId": "id_post_padre" // opcional, para respuestas
+}
+```
+
+**Salida exitosa:**
+- Status: 200 OK
+- Body: Objeto de la publicación creada
+
+#### GET `/posts/{id}`
+Obtiene una publicación específica por su ID.
+
+**Salida exitosa:**
+- Status: 200 OK
+- Body: Objeto de la publicación
+
+**Error:**
+- Status: 404 Not Found (si la publicación no existe)
+
+#### GET `/posts/{id}/replies`
+Obtiene todas las respuestas a una publicación específica.
+
+**Salida exitosa:**
+- Status: 200 OK
+- Body: Lista de publicaciones que son respuestas
+
+#### GET `/posts/user`
+Obtiene todas las publicaciones de un usuario específico.
+
+**Parámetros de consulta:**
+- `userId`: ID del usuario
+
+**Salida exitosa:**
+- Status: 200 OK
+- Body: Lista de publicaciones del usuario
+
+#### DELETE `/posts/{id}`
+Elimina una publicación específica.
+
+**Salida exitosa:**
+- Status: 200 OK
+- Body: "Post deleted successfully"
+
+#### POST `/posts/thread`
+Crea un nuevo hilo de publicaciones.
+
+**Entrada:**
+```json
+{
+  "userId": "id_usuario",
+  "content": "Contenido del post inicial del hilo"
+  // No debe incluir parentPostId
+}
+```
+
+**Salida exitosa:**
+- Status: 200 OK
+- Body: Objeto de la publicación inicial del hilo
+
+## Protección con JWT
+
+Para proteger cualquier ruta con JWT, se debe seguir el mismo patrón implementado en el endpoint `/posts/feed`:
+
+1. Añadir el parámetro `@RequestHeader(value = "Authorization", required = true) String authHeader` al método del controlador
+2. Verificar que el encabezado comience con `"Bearer "`
+3. Extraer el token: `String token = authHeader.substring(7);`
+4. Verificar el token con el servicio JWT: `jwtService.verify(token)`
+5. Procesar la solicitud solo si la verificación es exitosa
+6. Devolver un error 401 Unauthorized si la verificación falla
+
+Este mecanismo puede aplicarse a cualquier endpoint que requiera autenticación para proteger los recursos sensibles.
+
+
+
+
+
+
+
+
+
+
+
 
 
 

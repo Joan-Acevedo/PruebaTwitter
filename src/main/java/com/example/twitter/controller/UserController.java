@@ -21,6 +21,20 @@ public class UserController {
     @Autowired
     private UserService userService;
 
+    /**
+     * Handles the login authentication process for users.
+     * 
+     * This endpoint authenticates a user based on the provided username and
+     * password.
+     * If authentication is successful, a session token is generated and returned.
+     * 
+     * @param loginDTO The data transfer object containing the user's credentials
+     *                 (username and password)
+     * @return ResponseEntity containing the session token if authentication is
+     *         successful,
+     *         or an error message with 401 Unauthorized status if credentials are
+     *         invalid
+     */
     @PostMapping("/log-in")
     public ResponseEntity<?> login(@RequestBody LoginDTO loginDTO) {
         try {
@@ -38,6 +52,13 @@ public class UserController {
         }
     }
 
+    /**
+     * Registers a new user in the system.
+     * 
+     * @param user the User object containing registration information
+     * @return ResponseEntity containing the saved user and HTTP status CREATED
+     *         (201) if successful
+     */
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody User user) {
         User savedUser = userService.registerUser(user);
