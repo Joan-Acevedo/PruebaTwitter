@@ -2,6 +2,8 @@
 
 Clone simplificado de Twitter desarrollado con Spring Boot y MongoDB. Esta aplicación permite a los usuarios registrarse, iniciar sesión, crear publicaciones, responder a publicaciones existentes y visualizar hilos de conversación.
 
+**[Descargue aquí el archivo .env para su correcto uso, y péguelo en la ruta root](https://pruebacorreoescuelaingeduco-my.sharepoint.com/:u:/g/personal/juan_camargo-t_mail_escuelaing_edu_co/Ea0iFEcSPppFtID00r4PmO0Bu_2Kp19VuJVb3rT2KeDQUg?e=Lud4LL)**
+
 ## Getting Started
 
 Estas instrucciones te permitirán obtener una copia del proyecto en funcionamiento en tu máquina local para propósitos de desarrollo y pruebas.
