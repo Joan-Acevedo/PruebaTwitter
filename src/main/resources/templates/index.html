@@ -10,6 +10,7 @@
   <div class="top-bar">
     <div class="app-name">Tuiter</div>
     <div class="user-info">David Bend</div>
+    <button class="logout-btn" onclick="logout()">Logout</button>
   </div>
 
   <div class="container">
@@ -21,6 +22,24 @@
       <!-- Posts will be loaded here -->
     </div>
   </div>
+
+  <div class="container">
+        <h2 class="section-title">Your Posts</h2>
+    <div class="my-tweets">
+      <!-- Your personal posts will be loaded here -->
+    </div>
+
+    </div>
+
+  <script>
+    function logout() {
+      document.cookie = "session=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+      
+      // fetch('/api/logout', { method: 'POST', credentials: 'include' });
+
+      window.location.href = "/";
+    }
+  </script>
 
   <script src="/js/script.js"></script>
 </body>
