@@ -27,9 +27,10 @@ public class JWTService {
     }
 
     // 🔹 Firma un string usando RS256
-    public String sign(String data) {
+    public String sign(String userID, String username) {
         return Jwts.builder()
-                .claim("userID", data)
+                .claim("userID", userID)
+                .claim("username", username)
                 .signWith(privateKey, SignatureAlgorithm.RS256)
                 .compact();
     }

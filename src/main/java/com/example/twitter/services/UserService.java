@@ -31,7 +31,7 @@ public class UserService {
             throw new RuntimeException("Contraseña incorrecta");
         }
 
-        return this.jwtService.sign(user.getId());
+        return this.jwtService.sign(user.getId(), user.getUsername());
     }
 
     public User registerUser(User user) {

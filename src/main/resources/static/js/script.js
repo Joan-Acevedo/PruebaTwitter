@@ -1,7 +1,7 @@
 const API_URL = "http://localhost:8080";
 
-// Get user ID from JWT stored in session cookie
-function getUserId() {
+// Get user info from JWT stored in session cookie
+function getUserInfo() {
 	// Function to get a cookie value by name
 	function getCookie(name) {
 		const value = `; ${document.cookie}`;
@@ -30,9 +30,13 @@ function getUserId() {
 			atob(parts[1].replace(/-/g, "+").replace(/_/g, "/")),
 		);
 
-		// Extract and return the userID
+		// Extract and return both userID and username
 		if (!payload.userID) throw new Error("No userID in token");
-		return payload.userID;
+		
+		return {
+			userID: payload.userID,
+			username: payload.username || `User ${payload.userID}` // Use username if available, otherwise fall back to user ID
+		};
 	} catch (error) {
 		console.error("Error parsing JWT:", error);
 		// Redirect to root on invalid token
@@ -43,15 +47,15 @@ function getUserId() {
 
 // Create a new post or reply
 async function createPost(content, parentPostId = null) {
-	const userId = getUserId();
-	if (!userId) return null;
+	const userInfo = getUserInfo();
+	if (!userInfo) return null;
 
 	try {
 		const response = await fetch(`${API_URL}/posts/create`, {
 			method: "POST",
 			headers: { "Content-Type": "application/json" },
 			body: JSON.stringify({
-				userId: userId.toString(),
+				userId: userInfo.userID.toString(),
 				content,
 				parentPostId,
 			}),
@@ -85,7 +89,7 @@ function createReplyElement(reply) {
 	replyElement.innerHTML = `
     <div class="reply-header">
       <div class="avatar small"></div>
-      <span class="username">User ${reply.userId}</span>
+      <span class="username">${reply.username || `User ${reply.userId}`}</span>
       <span class="time">Just now</span>
     </div>
     <p class="reply-content">${reply.content}</p>
@@ -211,10 +215,13 @@ function createTweetElement(post, isUserPost = false) {
 	// Set data attribute for post ID to use later
 	tweetElement.setAttribute("data-post-id", post.id);
 
+	// Display username if available, otherwise fall back to userId
+	const displayName = isUserPost ? "You" : (post.username || `User ${post.userId}`);
+
 	tweetElement.innerHTML = `
     <div class="tweet-header">
       <div class="avatar"></div>
-	  <span class="username">${isUserPost ? "You" : `User ${post.userId}`}</span>
+	  <span class="username">${displayName}</span>
       <span class="time">Just now</span>
     </div>
     <p class="tweet-content">${post.content}</p>
@@ -245,7 +252,27 @@ async function loadFeed() {
 	tweetsContainer.innerHTML = "<p>Loading posts...</p>";
 
 	try {
-		const response = await fetch(`${API_URL}/posts/feed`);
+		function getCookie(name) {
+			const value = `; ${document.cookie}`;
+			const parts = value.split(`; ${name}=`);
+			if (parts.length === 2) return parts.pop().split(";").shift();
+			return null;
+		}
+
+		const sessionCookie = getCookie("session");
+
+		if (!sessionCookie) {
+			alert("Please log in to view feed.");
+			window.location.href = "/";
+			return;
+		}
+
+		const response = await fetch(`${API_URL}/posts/feed`, {
+			method: "GET",
+			headers: {
+				"Authorization": `Bearer ${sessionCookie}`
+			}
+		});
 
 		if (!response.ok) throw new Error("Error fetching feed");
 
@@ -275,11 +302,11 @@ async function loadUserPosts() {
 	const myTweetsContainer = document.querySelector(".my-tweets");
 	myTweetsContainer.innerHTML = "<p>Loading your posts...</p>";
 
-	const userId = getUserId();
-	if (!userId) return;
+	const userInfo = getUserInfo();
+	if (!userInfo) return;
 
 	try {
-		const response = await fetch(`${API_URL}/posts/user?userId=${userId}`);
+		const response = await fetch(`${API_URL}/posts/user?userId=${userInfo.userID}`);
 
 		if (!response.ok) throw new Error("Error fetching user posts");
 

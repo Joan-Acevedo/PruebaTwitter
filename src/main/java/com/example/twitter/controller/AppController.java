@@ -1,6 +1,7 @@
 package com.example.twitter.controller;
 
 import com.example.twitter.model.Post;
+import com.example.twitter.services.JWTService;
 import com.example.twitter.services.PostService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -13,9 +14,11 @@ import java.util.Optional;
 @CrossOrigin(origins = "*")
 public class AppController {
     private final PostService postService;
+    private final JWTService jwtService;
 
-    public AppController(PostService postService) {
+    public AppController(PostService postService, JWTService jwtService) {
         this.postService = postService;
+        this.jwtService = jwtService;
     }
 
     @PostMapping("/create")
@@ -38,12 +41,24 @@ public class AppController {
     }
 
     @GetMapping("/feed")
-    public ResponseEntity<?> getFeed() {
-        // verify user
+    public ResponseEntity<?> getFeed(@RequestHeader(value = "Authorization", required = true) String authHeader) {
         try {
+            // Verify JWT token
+            if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+                return ResponseEntity.status(401).body("Unauthorized: Invalid or missing token");
+            }
+
+            String token = authHeader.substring(7);
+
+            if (!this.jwtService.verify(token)) {
+                return ResponseEntity.status(401).body("Unauthorized: Invalid token");
+            }
+
             return ResponseEntity.ok(postService.getFeed());
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(401).body("Unauthorized: " + e.getMessage());
         }
     }
 
