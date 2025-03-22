@@ -1,69 +1,68 @@
 package com.example.twitter.controller;
 
+import com.example.twitter.services.JWTService;
 import com.example.twitter.services.UserService;
+
+import java.util.HashMap;
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.security.crypto.password.PasswordEncoder;
 
+import com.example.twitter.dto.LoginDTO;
 import com.example.twitter.model.User;
 
-@Controller
+@RestController
+@CrossOrigin(origins = "*")
 public class UserController {
 
     @Autowired
     private UserService userService;
 
-    @Autowired
-    private AuthenticationManager authenticationManager;
+    /**
+     * Handles the login authentication process for users.
+     * 
+     * This endpoint authenticates a user based on the provided username and
+     * password.
+     * If authentication is successful, a session token is generated and returned.
+     * 
+     * @param loginDTO The data transfer object containing the user's credentials
+     *                 (username and password)
+     * @return ResponseEntity containing the session token if authentication is
+     *         successful,
+     *         or an error message with 401 Unauthorized status if credentials are
+     *         invalid
+     */
+    @PostMapping("/log-in")
+    public ResponseEntity<?> login(@RequestBody LoginDTO loginDTO) {
+        try {
 
-    @Autowired
-    private PasswordEncoder passwordEncoder;
+            String session = this.userService.authUser(loginDTO.getUsername(), loginDTO.getPassword());
 
-    @GetMapping("/")
-    public String login() {
-        return "login";
-    }
+            Map<String, String> responseBody = new HashMap<>();
+            responseBody.put("session", session);
 
-    @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestParam String username, @RequestParam String password) {
-        try{
-            Authentication authentication = authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(username, password)
-            );
-            SecurityContextHolder.getContext().setAuthentication(authentication);
-            return ResponseEntity.ok("Login Success");
-        } catch (Exception e){
+            return ResponseEntity.ok(responseBody);
+
+        } catch (Exception e) {
+            System.out.println(e);
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Incorrect credentials");
         }
     }
 
-    @GetMapping("/register")
-    public String registerPage() {
-        return "register";
-    }
-
+    /**
+     * Registers a new user in the system.
+     * 
+     * @param user the User object containing registration information
+     * @return ResponseEntity containing the saved user and HTTP status CREATED
+     *         (201) if successful
+     */
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody User user) {
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
         User savedUser = userService.registerUser(user);
 
         return new ResponseEntity<>(savedUser, HttpStatus.CREATED);
     }
-
-    @GetMapping("/inicio")
-    public String admin(Model model) {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        model.addAttribute("user", auth.getName());
-        return "index";
-    }
 }
-
-

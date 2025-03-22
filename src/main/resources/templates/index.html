@@ -2,60 +2,45 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Twitter Clone</title>
-  <link rel="stylesheet" href="../static/css/style.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Twitter Clone - Simplified</title>
+  <link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
+  <div class="top-bar">
+    <div class="app-name">Tuiter</div>
+    <div class="user-info">David Bend</div>
+    <button class="logout-btn" onclick="logout()">Logout</button>
+  </div>
 
-<div class="top-bar">
-  <div class="app-name">Tuiter</div>
-  <div class="user-menu" onclick="toggleMenu()">
-    <span>David Bend</span>
-    <div class="dropdown" id="userDropdown">
-      <a href="#">Cerrar sesión</a>
+  <div class="container">
+    <div class="tweet-box">
+      <textarea rows="3" placeholder="¿Qué está pasando?" class="tweet-input"></textarea>
+      <button class="post-btn">Post</button>
+    </div>
+    <div class="tweets">
+      <!-- Posts will be loaded here -->
     </div>
   </div>
-</div>
 
-<div class="container">
-  <div class="tweet-box">
-    <input type="text" placeholder="What is happening?" class="tweet-input">
-    <button class="post-btn">Post</button>
-  </div>
-  <div class="tweets">
-    <div class="tweet" onclick="toggleThread(this)">
-      <div class="tweet-header">
-        <img src="user.jpg" alt="User" class="avatar">
-        <span class="username">David Bend</span>
-        <span class="time">2h</span>
-      </div>
-      <p class="tweet-content">"What if he was right?"</p>
+  <div class="container">
+        <h2 class="section-title">Your Posts</h2>
+    <div class="my-tweets">
+      <!-- Your personal posts will be loaded here -->
     </div>
-    <div class="tweet-thread">
-      <div class="tweet">
-        <div class="tweet-header">
-          <img src="user.jpg" alt="User" class="avatar">
-          <span class="time">1h</span>
-        </div>
-        <p>"I keep thinking about it..."</p>
-      </div>
-      <div class="tweet">
-        <div class="tweet-header">
-          <img src="user.jpg" alt="User" class="avatar">
-          <span class="username">David Bend</span>
-          <span class="time">30m</span>
-        </div>
-        <p>"More people should talk about this."</p>
-      </div>
-      <div class="reply-box">
-        <input type="text" placeholder="Reply to this thread" class="reply-input">
-        <button class="reply-btn" onclick="postTweet()">Reply</button>
-      </div>
-    </div>
-  </div>
-</div>
 
-<script src="../static/js/script.js"></script>
+    </div>
+
+  <script>
+    function logout() {
+      document.cookie = "session=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+      
+      // fetch('/api/logout', { method: 'POST', credentials: 'include' });
+
+      window.location.href = "/";
+    }
+  </script>
+
+  <script src="/js/script.js"></script>
 </body>
 </html>

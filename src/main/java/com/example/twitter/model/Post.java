@@ -1,17 +1,12 @@
 package com.example.twitter.model;
 
 import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 import jakarta.validation.constraints.Size;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
 
-
-@Document(collection = "Posts")
+@Document(collection = "posts")
 public class Post {
-
     @Id
     private String id;
     private String userId;
@@ -21,11 +16,7 @@ public class Post {
     private String content;
 
     private String parentPostId;
-
-    private String threadRootId;
-
-    private List<String> replies = new ArrayList<>();
-
+    private String threadId;
 
     public Post() {
     }
@@ -35,7 +26,6 @@ public class Post {
         this.creationDate = LocalDate.now();
         this.content = content;
     }
-
 
     public String getId() {
         return id;
@@ -77,32 +67,11 @@ public class Post {
         this.parentPostId = parentPostId;
     }
 
-    public String getThreadRootId() {
-        return threadRootId;
+    public String getThreadId() {
+        return threadId;
     }
 
-    public void setThreadRootId(String threadRootId) {
-        this.threadRootId = threadRootId;
-    }
-
-    public List<String> getReplies() {
-        return replies;
-    }
-
-    public void setReplies(List<String> replies) {
-        this.replies = replies;
-    }
-
-    @Override
-    public String toString() {
-        return "Post{" +
-                "id='" + id + '\'' +
-                ", userId='" + userId + '\'' +
-                ", creationDate=" + creationDate +
-                ", content='" + content + '\'' +
-                ", parentPostId='" + parentPostId + '\'' +
-                ", threadRootId='" + threadRootId + '\'' +
-                ", replies=" + replies +
-                '}';
+    public void setThreadId(String threadId) {
+        this.threadId = threadId;
     }
 }

@@ -53,15 +53,13 @@ class PostServiceTest {
         String content = "Test reply";
         String parentId = "post456";
         String rootId = "post789";
-        
+
         Post parentPost = new Post(userId, "Parent post");
         parentPost.setId(parentId);
-        parentPost.setThreadRootId(rootId);
-        
+
         Post replyPost = new Post(userId, content);
         replyPost.setParentPostId(parentId);
-        replyPost.setThreadRootId(rootId);
-        
+
         when(postRepository.findById(parentId)).thenReturn(Optional.of(parentPost));
         when(postRepository.save(any(Post.class))).thenReturn(replyPost);
 
@@ -71,7 +69,6 @@ class PostServiceTest {
         // Assert
         assertNotNull(result);
         assertEquals(parentId, result.getParentPostId());
-        assertEquals(rootId, result.getThreadRootId());
         verify(postRepository, times(1)).findById(parentId);
         verify(postRepository, times(1)).save(any(Post.class));
     }
@@ -81,9 +78,8 @@ class PostServiceTest {
         // Arrange
         String parentId = "post123";
         List<Post> expectedReplies = Arrays.asList(
-            new Post("user1", "Reply 1"),
-            new Post("user2", "Reply 2")
-        );
+                new Post("user1", "Reply 1"),
+                new Post("user2", "Reply 2"));
         when(postRepository.findByParentPostId(parentId)).thenReturn(expectedReplies);
 
         // Act
@@ -95,37 +91,19 @@ class PostServiceTest {
     }
 
     @Test
-    void getRootThreads() {
-        // Arrange
-        List<Post> expectedThreads = Arrays.asList(
-            new Post("user1", "Thread 1"),
-            new Post("user2", "Thread 2")
-        );
-        when(postRepository.findByParentPostIdIsNull()).thenReturn(expectedThreads);
-
-        // Act
-        List<Post> result = postService.getRootThreads();
-
-        // Assert
-        assertEquals(2, result.size());
-        verify(postRepository, times(1)).findByParentPostIdIsNull();
-    }
-
-    @Test
     void deletePost() {
         // Arrange
         String postId = "post123";
         List<Post> replies = Arrays.asList(
-            new Post("user1", "Reply 1"),
-            new Post("user2", "Reply 2")
-        );
+                new Post("user1", "Reply 1"),
+                new Post("user2", "Reply 2"));
         replies.get(0).setId("reply1");
         replies.get(1).setId("reply2");
-        
+
         when(postRepository.findByParentPostId(postId)).thenReturn(replies);
         when(postRepository.findByParentPostId("reply1")).thenReturn(List.of());
         when(postRepository.findByParentPostId("reply2")).thenReturn(List.of());
-        
+
         // Act
         postService.deletePost(postId);
 
@@ -137,4 +115,4 @@ class PostServiceTest {
         verify(postRepository, times(1)).deleteById("reply1");
         verify(postRepository, times(1)).deleteById("reply2");
     }
-} 
+}
